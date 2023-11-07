@@ -1,0 +1,32 @@
+{
+  "新手城镇-百慕大森林": {
+    "1": {
+      "1": {
+        "ProbabilityWeight": 300
+      },
+      "2": {
+        "ProbabilityWeight": 90
+      },
+      "3": {
+        "ProbabilityWeight": 10
+      },
+      "4": {
+        "ProbabilityWeight": 300
+      },
+      "5": {
+        "ProbabilityWeight": 90
+      },
+      "6": {
+        "ProbabilityWeight": 10
+      }
+    },
+    "22": {
+      "1": {
+        "ProbabilityWeight": 20
+      },
+      "2": {},
+      "3": {},
+      "4": {}
+    }
+  }
+}

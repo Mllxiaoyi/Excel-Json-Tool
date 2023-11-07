@@ -1,0 +1,83 @@
+{
+  "新手城镇-百慕大森林": {
+    "1": {
+      "1": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 300,
+        "AdjustProbabilityWeight": 0
+      },
+      "2": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 90,
+        "AdjustProbabilityWeight": 0
+      },
+      "3": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 10,
+        "AdjustProbabilityWeight": 0
+      },
+      "4": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 300,
+        "AdjustProbabilityWeight": 0
+      },
+      "5": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 90,
+        "AdjustProbabilityWeight": 0
+      },
+      "6": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 10,
+        "AdjustProbabilityWeight": 0
+      }
+    },
+    "4": {
+      "7": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 20,
+        "AdjustProbabilityWeight": 0
+      },
+      "8": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 20,
+        "AdjustProbabilityWeight": 0
+      },
+      "9": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 20,
+        "AdjustProbabilityWeight": 0
+      },
+      "10": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 20,
+        "AdjustProbabilityWeight": 0
+      },
+      "11": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 20,
+        "AdjustProbabilityWeight": 0
+      },
+      "12": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 20,
+        "AdjustProbabilityWeight": 0
+      },
+      "13": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 20,
+        "AdjustProbabilityWeight": 0
+      },
+      "14": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 20,
+        "AdjustProbabilityWeight": 0
+      },
+      "15": {
+        "LevelDataPath": "Assets/GameDatas/Level/Encounter_Event/EncounterLevelData_单敌人测试.asset",
+        "ProbabilityWeight": 20,
+        "AdjustProbabilityWeight": 0
+      }
+    }
+  }
+}

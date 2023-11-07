@@ -1,0 +1,11 @@
+[
+  "初始BUFF",
+  "初始BUFF1",
+  "初始BUFF2",
+  "初始BUFF3",
+  "初始BUFF4",
+  "初始BUFF5",
+  "初始BUFF6",
+  "初始BUFF7",
+  "初始BUFF8"
+]

@@ -1,0 +1,14 @@
+{
+  "初始BUFF": {
+    "Param1": null,
+    "ProbabilityWeight": 106,
+    "Quality": "WHITE",
+    "ResourcePath": null
+  },
+  "初始BUFF7": {
+    "Param1": null,
+    "ProbabilityWeight": 108,
+    "Quality": "WHITE",
+    "ResourcePath": null
+  }
+}
