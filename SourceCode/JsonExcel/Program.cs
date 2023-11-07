@@ -38,6 +38,7 @@ using System.Data.Common;
 using System.Runtime.Remoting.Messaging;
 using System.Xml.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 
 namespace JsonExcel
 {
@@ -366,6 +367,41 @@ namespace JsonExcel
             cellInfo.cellValue = excelCell.Value;
             cellInfo.cellType = excelCell.Value.ToString();
             return cellInfo;
+        }
+
+        private static JObject ReadJObject(ExcelWorksheet worksheet, int typeRow, int row, int startCol, int endCol)
+        {
+            JObject obj = new JObject();
+            for (int c = startCol; c <= endCol; c++)
+            {
+                if (worksheet.Cells[typeRow, c].Merge)
+                {
+                    string typeName = GetMergeValue(worksheet, typeRow, c).ToString();
+                    if (typeName.StartsWith("Map"))
+                    {
+
+                    }
+                    else if (typeName.StartsWith("List"))
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+                    string typeName = worksheet.Cells[typeRow, c].ToString();
+
+                    JTokenType vtype = GetJTokenType(typeName);
+                    object cellValue = worksheet.Cells[row, c].Value;
+                    JToken jsonValue = GetJToken(vtype, cellValue);
+
+                    obj.Add(typeName, jsonValue);
+                }
+            }
+            return obj; 
         }
 
         public static object GetMergeValue(ExcelWorksheet wSheet, int row, int column)
