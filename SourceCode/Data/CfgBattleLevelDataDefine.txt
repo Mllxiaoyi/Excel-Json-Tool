@@ -1,32 +1,36 @@
 {
   "新手城镇-百慕大森林": {
-    "1": {
-      "1": {
-        "ProbabilityWeight": 300
-      },
-      "2": {
-        "ProbabilityWeight": 90
-      },
-      "3": {
-        "ProbabilityWeight": 10
-      },
-      "4": {
-        "ProbabilityWeight": 300
-      },
-      "5": {
-        "ProbabilityWeight": 90
-      },
-      "6": {
-        "ProbabilityWeight": 10
-      }
-    },
-    "22": {
-      "1": {
-        "ProbabilityWeight": 20
-      },
-      "2": {},
-      "3": {},
-      "4": {}
-    }
+    "起始关卡": [
+      "Assets/GameDatas/LevelData/EncounterLevel/EncounterLevelData_单敌人测试.asset",
+      300,
+      0,
+      "Assets/GameDatas/LevelData/EncounterLevel/EncounterLevelData_普通对话.asset",
+      90,
+      0,
+      "Assets/GameDatas/LevelData/EncounterLevel/EncounterLevelData_普通对话and选项测试.asset",
+      10,
+      0,
+      "Assets/GameDatas/LevelData/EncounterLevel/EncounterLevelData_普通对话.asset",
+      300,
+      0,
+      "Assets/GameDatas/LevelData/EncounterLevel/EncounterLevelData_普通对话.asset",
+      90,
+      0,
+      "Assets/GameDatas/LevelData/EncounterLevel/EncounterLevelData_普通对话.asset",
+      10,
+      0,
+      "Assets/GameDatas/LevelData/EncounterLevel/EncounterLevelData_普通对话.asset",
+      20,
+      0,
+      "Assets/GameDatas/LevelData/EncounterLevel/EncounterLevelData_普通对话.asset",
+      20,
+      0,
+      "Assets/GameDatas/LevelData/EncounterLevel/EncounterLevelData_普通对话.asset",
+      20,
+      0,
+      "Assets/GameDatas/LevelData/EncounterLevel/EncounterLevelData_普通对话.asset",
+      20,
+      0
+    ]
   }
 }

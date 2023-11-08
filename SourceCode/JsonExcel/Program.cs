@@ -39,6 +39,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Xml.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace JsonExcel
 {
@@ -200,7 +201,7 @@ namespace JsonExcel
             public string cellType;
         }
 
-
+        static int typeDefineRow = 0;
         static void XlsxToJson2(string xlsx_file, string json_file)
         {
             using (var excel = new ExcelPackage(new FileInfo(xlsx_file)))
@@ -210,7 +211,7 @@ namespace JsonExcel
                 int rowCount = worksheet.Dimension.Rows;
                 int columnCount = worksheet.Dimension.Columns;
 
-                int dataBeginRow = 1, dataBeginCol = 2, typeDefineRow = 1, varDefineRow = 1;
+                int dataBeginRow = 1, dataBeginCol = 2, varDefineRow = 1;
                 List<int> containerRows = new List<int>();
                 for (dataBeginRow = 1; dataBeginRow <= rowCount; dataBeginRow++)
                 {
@@ -251,21 +252,7 @@ namespace JsonExcel
                     topJContainer = new JObject();
                 }
 
-                for (int row = 1; row < tableConstruct.Count; row++)
-                {
-                    List<CellInfo> curRowConstruct = tableConstruct[row];
-                    foreach (var item in curRowConstruct)
-                    {
-                        //如果item 只有一列
-                        if(item.start == item.end)
-                        {
-                            string varType = worksheet.Cells[typeDefineRow, item.start].Text;
-                            JTokenType type = (JTokenType)Enum.Parse(typeof(JTokenType), varType);
-                            JToken val = GetJToken(type, cellValue);
-                            owner.Add(new JProperty(varName, val));
-                        }
-                    }
-                }
+
                 //路径Example: 
                 //{
                 //    "First":{
@@ -281,69 +268,6 @@ namespace JsonExcel
 
                 //rowOwnerPaths = First
                 //colOwnerPaths = Array:First_List/Array:Second_List/List_1
-                for (int r = dataBeginRow; r <= rowCount; r++)
-                {
-                    JContainer owner = topJObject;
-                    try
-                    {
-                        List<string> rowOwnerPath = rowOwnerPaths[r];
-                        foreach (string key in rowOwnerPath)
-                        {
-                            if (owner[key] == null)
-                            {
-                                owner[key] = new JObject();
-                            }
-                            owner = (JContainer)owner[key];
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception(string.Format("Row:{0}, ERROR:{1}", r, ex.Message), ex.InnerException);
-                    }
-
-                    for (int c = dataBeginRow; c <= columnCount; c++)
-                    {
-
-                        List<string> colOwnerPath = colOwnerPaths[c];
-                        string varName = worksheet.Cells[varDefineRow, c].Text;
-                        string varType = worksheet.Cells[typeDefineRow, c].Text;
-                        object cellValue = worksheet.Cells[r, c].Value;
-                        try
-                        {
-                            foreach (string key in colOwnerPath)
-                            {
-                                if (key.StartsWith("Array"))
-                                {
-                                    string memberName = key.Split(':')[1];
-                                    if (owner[memberName] != null) continue;
-
-                                    JArray jArray = new JArray();
-                                    if (owner is JArray)
-                                    {
-                                        owner.Add(jArray);
-                                    }
-                                    owner.Add(new JProperty(key, jArray));
-                                    owner = jArray;
-                                }
-                                else if (key == "Object")
-                                {
-                                    JObject jObject = new JObject();
-                                    owner.Add(new JProperty(key, jObject));
-                                    owner = jObject;
-                                }
-                            }
-                            JTokenType type = (JTokenType)Enum.Parse(typeof(JTokenType), varType);
-                            JToken val = GetJToken(type, cellValue);
-                            owner.Add(new JProperty(varName, val));
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Exception(string.Format("Row:{0},Col:{1} ERROR:{2}", r, c, ex.Message), ex.InnerException);
-                        }
-                    }
-                }
-
-                File.WriteAllText(json_file, JsonConvert.SerializeObject(topJObject, Formatting.Indented));
             }
         }
 
@@ -369,39 +293,60 @@ namespace JsonExcel
             return cellInfo;
         }
 
-        private static JObject ReadJObject(ExcelWorksheet worksheet, int typeRow, int row, int startCol, int endCol)
+
+
+
+        private static JProperty ReadJProperty(ExcelWorksheet worksheet, int valRow, int row, int col)
+        {
+            string varName = worksheet.Cells[valRow, col].ToString();
+            JTokenType vtype = GetJTokenType(worksheet.Cells[typeDefineRow, col].Text);
+            object cellValue = worksheet.Cells[row, col].Value;
+            JToken jsonValue = GetJToken(vtype, cellValue);
+            return new JProperty(varName, jsonValue);
+        }
+
+        private static JObject ReadJObject(ExcelWorksheet worksheet, int typeRow, int startRow, int endRow, int startCol, int endCol)
         {
             JObject obj = new JObject();
             for (int c = startCol; c <= endCol; c++)
             {
-                if (worksheet.Cells[typeRow, c].Merge)
+                string typeName = GetMergeValue(worksheet, typeRow, c).ToString();
+                if (typeName.StartsWith("Map"))
                 {
-                    string typeName = GetMergeValue(worksheet, typeRow, c).ToString();
-                    if (typeName.StartsWith("Map"))
-                    {
 
-                    }
-                    else if (typeName.StartsWith("List"))
-                    {
+                }
+                else if (typeName.StartsWith("List"))
+                {
 
-                    }
-                    else
-                    {
-
-                    }
                 }
                 else
                 {
-                    string typeName = worksheet.Cells[typeRow, c].ToString();
 
-                    JTokenType vtype = GetJTokenType(typeName);
-                    object cellValue = worksheet.Cells[row, c].Value;
-                    JToken jsonValue = GetJToken(vtype, cellValue);
-
-                    obj.Add(typeName, jsonValue);
                 }
             }
             return obj; 
+        }
+
+        private static JObject ReadJMap(ExcelWorksheet worksheet, int typeRow, int startRow, int endRow, int startCol, int endCol)
+        {
+            JObject obj = new JObject();
+            for (int c = startCol; c <= endCol; c++)
+            {
+                string typeName = GetMergeValue(worksheet, typeRow, c).ToString();
+                if (typeName.StartsWith("Map"))
+                {
+
+                }
+                else if (typeName.StartsWith("List"))
+                {
+
+                }
+                else
+                {
+
+                }
+            }
+            return obj;
         }
 
         public static object GetMergeValue(ExcelWorksheet wSheet, int row, int column)
@@ -447,7 +392,7 @@ namespace JsonExcel
                 if (ws.Cells[header_row, 1].Value.Equals("Key") && ws.Tables[0].Address.Columns > 2)
                 {
                     JObject obj = new JObject();
-                    Dictionary<int, JObject> Owners = new Dictionary<int, JObject>();
+                    Dictionary<int, JContainer> Owners = new Dictionary<int, JContainer>();
                     for (int r = ws.Tables[0].Address.Start.Row + 1; r <= ws.Tables[0].Address.Rows + ws.Tables[0].Address.Start.Row - 1; r++)
                     {
                         if (ws.Cells[r, 1].Value != null)
@@ -457,7 +402,7 @@ namespace JsonExcel
                             Owners[1] = item;
                         }
 
-                        JObject Owner = null;
+                        JContainer Owner = null;
                         for (int c = ws.Tables[0].Address.Start.Column + 1; c <= ws.Tables[0].Address.Columns; c++)
                         {
                             if (Owners.ContainsKey(c - 1))
@@ -469,19 +414,13 @@ namespace JsonExcel
                                 {
                                     try
                                     {
-                                        if (ws.Cells[header_row, c + 1].Value != null && ws.Cells[header_row, c + 1].Value.ToString() == "Value")
-                                        {//KVOBJECT
-                                            JTokenType vtype = GetJTokenType(ws.Cells[r, c + 1].Value.ToString());
-                                            JToken v = GetJToken(vtype, ws.Cells[r, c + 1].Value);
-                                            if (v != null) Owner.Add(ws.Cells[r, c].Value.ToString(), v);
-                                            c++;
-                                        }
+                                        JObject subItem = new JObject();
+                                        if (Owner is JArray)
+                                            (Owner as JArray).Add(subItem);
                                         else
-                                        {
-                                            JObject subItem = new JObject();
-                                            Owner.Add(ws.Cells[r, c].Value.ToString(), subItem);
-                                            Owners[c] = subItem;
-                                        }
+                                            (Owner as JObject).Add(ws.Cells[r, c].Value.ToString(), subItem);
+
+                                        Owners[c] = subItem;
                                     }
                                     catch (Exception ex)
                                     {
@@ -493,16 +432,18 @@ namespace JsonExcel
 
                             if (ws.Cells[type_row, c].Value.Equals("List"))
                             {//ARRAY
-                                JArray array = new JArray();
                                 if (ws.Cells[r, c].Value != null)
                                 {
                                     try
                                     {
-                                        JArray subItem = new JArray();
-                                        JTokenType type = (JTokenType)Enum.Parse(typeof(JTokenType), ws.Cells[type_row, c].Value.ToString());
-                                        JToken val = GetJToken(type, ws.Cells[r, c].Value);
-                                        if (val != null) array.Add(GetJToken(type, val));
-
+                                        if (Owner is JArray)
+                                            (Owner as JArray).Add(new JArray());
+                                        else if (Owner[header] == null)
+                                        {
+                                            JArray subItem = new JArray();
+                                            (Owner as JObject).Add(header, subItem);
+                                            Owners[c] = subItem;
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
@@ -518,7 +459,13 @@ namespace JsonExcel
                                 {
                                     JTokenType type = (JTokenType)Enum.Parse(typeof(JTokenType), ws.Cells[type_row, c].Value.ToString());
                                     JToken val = GetJToken(type, ws.Cells[r, c].Value);
-                                    if (val != null) Owner.Add(header, val);
+                                    if (val != null)
+                                    {
+                                        if(Owner is JArray)
+                                            (Owner as JArray).Add(val);
+                                        else
+                                            (Owner as JObject).Add(header, val);
+                                    }
                                     if (header.Contains("."))
                                     {
                                         //JArray array = new JArray();
